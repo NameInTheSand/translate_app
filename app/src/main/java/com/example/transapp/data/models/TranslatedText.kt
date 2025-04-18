@@ -9,3 +9,5 @@ data class TranslatedText(
     val translateTo: String = "",
     val translation: String = ""
 )
+
+data class TranslatedBody(val translate: String = "rapidapi")

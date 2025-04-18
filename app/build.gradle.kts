@@ -1,8 +1,19 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
+
+fun loadProperties(file: File): Properties {
+    val properties = Properties()
+    file.inputStream().use { properties.load(it) }
+    return properties
+}
+
+val secretsFile = rootProject.file("secret.properties")
+val secrets = loadProperties(secretsFile)
 
 android {
     namespace = "com.example.transapp"
@@ -16,6 +27,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField(
+            "String", "API_KEY", "\"${secrets.getProperty("API_KEY")}\""
+        )
     }
 
     buildTypes {
@@ -36,6 +50,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildFeatures.buildConfig = true
     }
 }
 
@@ -60,4 +75,6 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
+    implementation(libs.retrofit2.retrofit)
+    implementation(libs.logging.interceptor)
 }
